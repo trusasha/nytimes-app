@@ -6,6 +6,8 @@ export const localization = {
   beforeTheWalk: 'Before the walk',
   beforeMedication: 'Before medication',
   min: 'min',
+  by: 'By',
+  published: 'Published',
 };
 
 export const routeNameLocalization = {

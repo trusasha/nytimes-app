@@ -1,20 +1,32 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
-import { View, Text } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import useStyles from './useStyles';
-import { configStore } from 'stores';
+import { configStore, storiesStore } from 'stores';
 import useNavigate from 'hooks/useNavigate';
+import HomeStoriesItem from './HomeStoriesItem';
 
 const Home = () => {
   const S = useStyles();
   const T = configStore.localization;
   const R = configStore.routeNameLocalization;
 
+  const data = storiesStore.mockData.results;
+
+  const renderItem = useCallback(({ item }) => <HomeStoriesItem item={item} />, []);
+
+  const keyExtractor = useCallback(({ title }) => title, []);
+
   const navigate = useNavigate();
 
   return (
     <View style={S.container}>
-      <Text>Home</Text>
+      <FlatList
+        contentContainerStyle={S.contentContainer}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        data={data}
+      />
     </View>
   );
 };

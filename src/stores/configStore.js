@@ -46,6 +46,18 @@ export const configStore = makeAutoObservable({
     }
   },
 
+  config: {
+    stories: {
+      section: {
+        0: 'arts',
+        1: 'automobiles',
+        2: 'books',
+        3: 'business',
+        4: 'fashion',
+      },
+    },
+  },
+
   get localizationLowerCased() {
     const result = { ...configStore.localization };
     for (const phrase in result) {

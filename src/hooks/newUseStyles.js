@@ -8,8 +8,9 @@ export const lightPalette = {
   background: '#F1F2F2',
   secondaryBackground: '#ffffff',
   stroke: '#12121D',
+  strokeSecondary: '#828282',
   border: '#cccccc',
-  primaryColor: '#FF6B6B',
+  primaryColor: '#319EDC',
   white: '#FFFFFF',
   blue: '#4D96FF',
 };
@@ -19,8 +20,9 @@ export const darkPalette = {
   background: '#121212',
   secondaryBackground: '#000000',
   stroke: '#FFFFFF',
+  strokeSecondary: '#727272',
   border: '#BDBDBD',
-  primaryColor: '#FF6B6B',
+  primaryColor: '#319EDC',
   white: '#FFFFFF',
   blue: '#4D96FF',
 };
