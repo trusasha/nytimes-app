@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useEffect } from 'react';
+import 'helpers/date';
 import { Platform, SafeAreaView, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
