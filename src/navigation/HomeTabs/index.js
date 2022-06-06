@@ -3,6 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from 'screens/Home';
 import Profile from 'screens/Profile';
 import { configStore } from 'stores';
+import { View } from 'react-native';
+import HomeHeaderActions from 'screens/Home/HomeHeaderActions';
 
 const Tabs = createBottomTabNavigator();
 const R = configStore.routeNameLocalization;
@@ -10,7 +12,16 @@ const R = configStore.routeNameLocalization;
 export const HomeTabs = () => {
   return (
     <Tabs.Navigator>
-      <Tabs.Screen name={R.Home} component={Home} />
+      <Tabs.Screen
+        name={R.Home}
+        component={Home}
+        options={{
+          headerTitleAlign: 'left',
+          headerRight: () => <HomeHeaderActions />,
+          headerRightContainerStyle: { paddingRight: 120 },
+        }}
+        // children={<View style={{ width: 20, height: 20, backgroundColor: 'red' }} />}
+      />
       <Tabs.Screen name={R.Profile} component={Profile} />
     </Tabs.Navigator>
   );
