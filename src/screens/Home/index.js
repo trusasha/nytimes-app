@@ -1,10 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import useStyles from './useStyles';
 import { configStore, storiesStore } from 'stores';
 import useNavigate from 'hooks/useNavigate';
 import HomeStoriesItem from './HomeStoriesItem';
+import AnimatedModal from 'components/AnimatedModal';
+import { PortalProvider } from '@gorhom/portal';
 
 const Home = () => {
   const S = useStyles();
@@ -20,14 +22,16 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <View style={S.container}>
-      <FlatList
-        contentContainerStyle={S.contentContainer}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        data={data}
-      />
-    </View>
+    <PortalProvider>
+      <View style={S.container}>
+        <FlatList
+          contentContainerStyle={S.contentContainer}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          data={data}
+        />
+      </View>
+    </PortalProvider>
   );
 };
 
