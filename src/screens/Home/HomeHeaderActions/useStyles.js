@@ -5,7 +5,7 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => ({
     width: 40,
     height: 40,
     backgroundColor: p.border,
-    borderRadius: 16,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -15,7 +15,7 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => ({
     backgroundColor: p.strokeSecondary,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 12,
+    borderRadius: 8,
   },
 }));
 
