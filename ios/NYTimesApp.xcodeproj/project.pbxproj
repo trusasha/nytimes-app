@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* NYTimesAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* NYTimesAppTests.m */; };
+		04B6B1E91D1D477B9FE85861 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB77EDFCAD9C40F0A47B618D /* OpenSans-Regular.ttf */; };
 		0C80B921A6F3F58F76C31292 /* libPods-NYTimesApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-NYTimesApp.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -15,7 +16,6 @@
 		7699B88040F8A987B510C191 /* libPods-NYTimesApp-NYTimesAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-NYTimesApp-NYTimesAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9E705CAB9310407E952ECDA2 /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FC5C2C2E2594D019F0AD9DE /* OpenSans-Bold.ttf */; };
-		04B6B1E91D1D477B9FE85861 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB77EDFCAD9C40F0A47B618D /* OpenSans-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,11 +43,11 @@
 		5709B34CF0A7D63546082F79 /* Pods-NYTimesApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NYTimesApp.release.xcconfig"; path = "Target Support Files/Pods-NYTimesApp/Pods-NYTimesApp.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-NYTimesApp-NYTimesAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NYTimesApp-NYTimesAppTests.debug.xcconfig"; path = "Target Support Files/Pods-NYTimesApp-NYTimesAppTests/Pods-NYTimesApp-NYTimesAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-NYTimesApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NYTimesApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FC5C2C2E2594D019F0AD9DE /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../src/assets/fonts/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NYTimesApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-NYTimesApp-NYTimesAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NYTimesApp-NYTimesAppTests.release.xcconfig"; path = "Target Support Files/Pods-NYTimesApp-NYTimesAppTests/Pods-NYTimesApp-NYTimesAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		7FC5C2C2E2594D019F0AD9DE /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; name = "OpenSans-Bold.ttf"; path = "../src/assets/fonts/OpenSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		FB77EDFCAD9C40F0A47B618D /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; name = "OpenSans-Regular.ttf"; path = "../src/assets/fonts/OpenSans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FB77EDFCAD9C40F0A47B618D /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Regular.ttf"; path = "../src/assets/fonts/OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +85,16 @@
 				00E356F11AD99517003FC87E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		12211B5F4F2E45FD8668B119 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7FC5C2C2E2594D019F0AD9DE /* OpenSans-Bold.ttf */,
+				FB77EDFCAD9C40F0A47B618D /* OpenSans-Regular.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 		13B07FAE1A68108700A75B9A /* NYTimesApp */ = {
@@ -152,16 +162,6 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
-		};
-		12211B5F4F2E45FD8668B119 /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-				7FC5C2C2E2594D019F0AD9DE /* OpenSans-Bold.ttf */,
-				FB77EDFCAD9C40F0A47B618D /* OpenSans-Regular.ttf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
