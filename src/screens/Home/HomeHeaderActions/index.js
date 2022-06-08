@@ -22,7 +22,7 @@ const HomeHeaderActions = ({}) => {
 
   return (
     <ActionModal visible={visible} setVisible={setVisible} modalComponent={modalComponent}>
-      <TouchableOpacity style={S.container} onPress={onOpen}>
+      <TouchableOpacity style={S.container} onPress={onOpen} activeOpacity={0.8}>
         <Text style={{ fontSize: 24 }} children={'+'} />
       </TouchableOpacity>
     </ActionModal>

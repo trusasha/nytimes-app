@@ -18,9 +18,8 @@ export const HomeTabs = () => {
         options={{
           headerTitleAlign: 'left',
           headerRight: () => <HomeHeaderActions />,
-          headerRightContainerStyle: { paddingRight: 120 },
+          headerRightContainerStyle: { paddingRight: 12 },
         }}
-        // children={<View style={{ width: 20, height: 20, backgroundColor: 'red' }} />}
       />
       <Tabs.Screen name={R.Profile} component={Profile} />
     </Tabs.Navigator>
