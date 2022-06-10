@@ -4,9 +4,10 @@ import newUseStyles from 'hooks/newUseStyles';
 const useStyles = newUseStyles(({ p, w, h, l, n, i }) => ({
   container: {
     position: 'absolute',
+    paddingTop: 12 + i.top,
     width: w,
-    height: h,
     backgroundColor: p.background,
+    borderRadius: 24,
   },
   header: {
     padding: 12,
