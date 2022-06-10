@@ -7,6 +7,7 @@ import newUseStyles, { ThemeContextProvider } from 'hooks/newUseStyles';
 import { MainStack } from 'navigation/MainStack';
 import { configStore } from 'stores';
 import { keyboardHeightRef } from 'hooks/useKeyboardHeight';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const isFullscreen = Platform.OS === 'ios';
 
@@ -49,18 +50,23 @@ const App = () => {
   const WrapperViewProvider = isFullscreen ? SafeAreaProvider : View;
   const WrapperView = isFullscreen ? MobileWrapperView : SafeAreaView;
 
+  /** @type {import('react-native').ViewStyle} */
+  const flexStyle = { flex: 1 };
+
   return (
-    <ThemeContextProvider>
-      <WrapperViewProvider>
-        <WrapperView nativeID="root-inner-container" style={S.container}>
-          <View style={S.subContainer} onLayout={onLayout}>
-            <NavigationContainer>
-              <MainStack />
-            </NavigationContainer>
-          </View>
-        </WrapperView>
-      </WrapperViewProvider>
-    </ThemeContextProvider>
+    <GestureHandlerRootView style={flexStyle}>
+      <ThemeContextProvider>
+        <WrapperViewProvider>
+          <WrapperView nativeID="root-inner-container" style={S.container}>
+            <View style={S.subContainer} onLayout={onLayout}>
+              <NavigationContainer>
+                <MainStack />
+              </NavigationContainer>
+            </View>
+          </WrapperView>
+        </WrapperViewProvider>
+      </ThemeContextProvider>
+    </GestureHandlerRootView>
   );
 };
 
