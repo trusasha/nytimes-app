@@ -12,11 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const isFullscreen = Platform.OS === 'ios';
 
 const useStyles = newUseStyles(() => ({
-  container: {
-    height: '100%',
-    overflow: 'hidden',
-  },
-  subContainer: {
+  flex: {
     flex: 1,
   },
 }));
@@ -50,15 +46,12 @@ const App = () => {
   const WrapperViewProvider = isFullscreen ? SafeAreaProvider : View;
   const WrapperView = isFullscreen ? MobileWrapperView : SafeAreaView;
 
-  /** @type {import('react-native').ViewStyle} */
-  const flexStyle = { flex: 1 };
-
   return (
-    <GestureHandlerRootView style={flexStyle}>
+    <GestureHandlerRootView style={S.flex}>
       <ThemeContextProvider>
         <WrapperViewProvider>
-          <WrapperView nativeID="root-inner-container" style={S.container}>
-            <View style={S.subContainer} onLayout={onLayout}>
+          <WrapperView nativeID="root-inner-container" style={S.flex}>
+            <View style={S.flex} onLayout={onLayout}>
               <NavigationContainer>
                 <MainStack />
               </NavigationContainer>
