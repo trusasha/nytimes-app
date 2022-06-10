@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import useStyles from './useStyles';
@@ -10,13 +10,15 @@ import HomeStoryModal from '../HomeStoryModal';
 /**
  * @typedef {{
  *  item: Story
+ *  index: number
+ *  offset: number
  * }} HomeStoriesItemProps
  */
 
 /**
  * @param {HomeStoriesItemProps} props
  */
-const HomeStoriesItem = ({ item }) => {
+const HomeStoriesItem = ({ item, index, offset }) => {
   const { title, byline, created_date, multimedia } = item;
   const T = configStore.localization;
   const S = useStyles();
@@ -36,18 +38,27 @@ const HomeStoriesItem = ({ item }) => {
 
   const onPress = useCallback(() => onOpenModal(item, ref), [item, onOpenModal]);
 
+  const modal = useMemo(() => <HomeStoryModal item={item} />, [item]);
+
+  const offsets = { top: -offset };
+
   return (
-    <>
-      <TouchableOpacity ref={ref} style={S.container} onPress={onPress}>
-        <Image style={S.image} source={image} />
-        <View style={S.content}>
-          <Text style={S.title} children={title} numberOfLines={2} />
-          <Text style={S.byline} children={byline} numberOfLines={2} />
-          <Text style={S.published} children={timeFrom} numberOfLines={2} />
-        </View>
-      </TouchableOpacity>
-      <HomeStoryModal item={item} visible={storyVisible} setVisible={setStoryVisible} />
-    </>
+    <View style={S.container}>
+      <AnimatedModal
+        visible={storyVisible}
+        setVisible={setStoryVisible}
+        modal={modal}
+        offsets={offsets}>
+        <TouchableOpacity ref={ref} style={S.itemContainer} onPress={onPress}>
+          <Image style={S.image} source={image} />
+          {/* <View style={S.content}>
+            <Text style={S.title} children={title} numberOfLines={2} />
+            <Text style={S.byline} children={byline} numberOfLines={2} />
+            <Text style={S.published} children={timeFrom} numberOfLines={2} />
+          </View> */}
+        </TouchableOpacity>
+      </AnimatedModal>
+    </View>
   );
 };
 
