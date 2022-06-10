@@ -23,6 +23,16 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
  * }} Measures
  */
 
+/** @type {Measures} */
+const initialMeasures = {
+  width: 0,
+  height: 0,
+  xLeft: 0,
+  xRight: 0,
+  yTop: 0,
+  yBottom: 0,
+};
+
 /**
  * @typedef {{
  *  visible: boolean
@@ -42,17 +52,14 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
   const S = useStyles();
 
   /** @type {React.MutableRefObject<Measures>} */
-  const childrenMeasures = useRef(null);
+  const childrenMeasures = useRef(initialMeasures);
 
-  /** @type {React.MutableRefObject<View>} */
-  const childrenRef = useRef(null);
+  const horizontalOffsets = (w - childrenMeasures.current.width) / 2;
 
-  const horizontalOffsets = (w - (childrenMeasures.current?.width || 0)) / 2;
-
-  const modalHorizontalScale = (childrenMeasures.current?.width || w) / w;
-  const modalTopOffset = (childrenMeasures.current?.yTop || 0) + (offsets?.top || 0);
-  const modalLeftOffset = (childrenMeasures.current?.xLeft || 0) - horizontalOffsets;
-  const modalCloseHeight = childrenMeasures.current?.height || 0;
+  const modalHorizontalScale = childrenMeasures.current.width / w;
+  const modalTopOffset = childrenMeasures.current.yTop + (offsets?.top || 0);
+  const modalLeftOffset = childrenMeasures.current.xLeft - horizontalOffsets;
+  const modalCloseHeight = childrenMeasures.current.height;
 
   const onClose = useCallback(() => setVisible(false), [setVisible]);
 
@@ -73,7 +80,7 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
 
   const opacity = useSharedValue(0);
   const translate = useSharedValue(1);
-  const height = useSharedValue(childrenMeasures.current?.height || 0);
+  const height = useSharedValue(childrenMeasures.current.height);
   const scaleX = useSharedValue(modalHorizontalScale);
 
   const gestureTranslateX = useSharedValue(0);
@@ -135,7 +142,7 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
   }, [translate, opacity, height, visible, h, scaleX, modalHorizontalScale, modalCloseHeight]);
 
   return (
-    <View ref={childrenRef} onLayout={onChildrenLayout}>
+    <View onLayout={onChildrenLayout}>
       {children}
       <Portal>
         <PanGestureHandler onGestureEvent={panGestureEvent}>
