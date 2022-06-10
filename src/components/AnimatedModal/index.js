@@ -4,7 +4,13 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import useStyles from './useStyles';
 import { Portal } from '@gorhom/portal';
 import { useSpecialStyleProps } from 'hooks/newUseStyles';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 
 /**
  * @typedef {{
@@ -70,20 +76,50 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
   const height = useSharedValue(childrenMeasures.current?.height || 0);
   const scaleX = useSharedValue(modalHorizontalScale);
 
+  const gestureTranslateX = useSharedValue(0);
+  const gestureTranslateY = useSharedValue(0);
+  const gestureScale = useSharedValue(1);
+
+  const panGestureEvent = useAnimatedGestureHandler({
+    onActive: (event) => {
+      gestureTranslateX.value = event.translationX;
+      gestureTranslateY.value = event.translationY;
+      gestureScale.value = withTiming(0.9, { duration: 200 });
+    },
+    onEnd: (event) => {
+      if (event.translationX > 100 || event.translationY > 100) {
+        onClose();
+        gestureTranslateX.value = withTiming(0, { duration: 200 });
+        gestureTranslateY.value = withTiming(0, { duration: 200 });
+        gestureScale.value = withTiming(1, { duration: 200 });
+      } else {
+        gestureTranslateX.value = withTiming(0, { duration: 200 });
+        gestureTranslateY.value = withTiming(0, { duration: 200 });
+        gestureScale.value = withTiming(1, { duration: 200 });
+      }
+    },
+  });
+
   const reanimatedStyle = useAnimatedStyle(
     () => ({
       height: height.value,
       opacity: opacity.value,
       transform: [
-        { translateY: translate.value * modalTopOffset },
-        { translateX: translate.value * modalLeftOffset },
+        { translateY: translate.value * modalTopOffset + gestureTranslateY.value },
+        { translateX: translate.value * modalLeftOffset + gestureTranslateX.value },
         { scaleX: scaleX.value },
+        { scale: gestureScale.value },
       ],
     }),
     [modalTopOffset, modalLeftOffset],
   );
 
+  const backdropStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value * 0.5,
+  }));
+
   const modalStyles = [S.container, reanimatedStyle];
+  const backdropStyles = [S.backdrop, backdropStyle];
   const pointerEvents = visible ? 'auto' : 'none';
 
   useEffect(() => {
@@ -102,13 +138,16 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
     <View ref={childrenRef} onLayout={onChildrenLayout}>
       {children}
       <Portal>
-        <Animated.View style={modalStyles} pointerEvents={pointerEvents}>
-          <View style={S.header}>
-            <TouchableOpacity style={S.backButton} onPress={onClose} />
-            {!!title && <Text style={S.title} children={title} />}
-          </View>
-          {modal}
-        </Animated.View>
+        <PanGestureHandler onGestureEvent={panGestureEvent}>
+          <Animated.View style={modalStyles} pointerEvents={pointerEvents}>
+            <View style={S.header}>
+              <TouchableOpacity style={S.backButton} onPress={onClose} />
+              {!!title && <Text style={S.title} children={title} />}
+            </View>
+            {modal}
+          </Animated.View>
+        </PanGestureHandler>
+        <Animated.View style={backdropStyles} pointerEvents="none" />
       </Portal>
     </View>
   );
