@@ -29,6 +29,12 @@ const Home = () => {
     storiesStore.mockData.results[10],
     storiesStore.mockData.results[11],
     storiesStore.mockData.results[12],
+    storiesStore.mockData.results[13],
+    storiesStore.mockData.results[14],
+    storiesStore.mockData.results[15],
+    storiesStore.mockData.results[16],
+    storiesStore.mockData.results[17],
+    storiesStore.mockData.results[18],
   ];
 
   const renderItem = useCallback(
