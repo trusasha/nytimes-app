@@ -49,7 +49,7 @@ const App = () => {
   return (
     <GestureHandlerRootView style={S.flex}>
       <ThemeContextProvider>
-        <WrapperViewProvider>
+        <WrapperViewProvider style={S.flex}>
           <WrapperView nativeID="root-inner-container" style={S.flex}>
             <View style={S.flex} onLayout={onLayout}>
               <NavigationContainer>
