@@ -12,6 +12,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
+const speed = 1;
+
 /**
  * @typedef {{
  * width: number
@@ -40,6 +42,7 @@ const initialMeasures = {
  *  title?: string
  *  children: JSX.Element
  *  modal: JSX.Element
+ *  backdrop?: JSX.Element
  *  offsets?: {top: number}
  * }} AnimatedModalProps
  */
@@ -47,7 +50,7 @@ const initialMeasures = {
 /**
  * @param {AnimatedModalProps} props
  */
-const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets }) => {
+const AnimatedModal = ({ visible, setVisible, title, children, modal, backdrop, offsets }) => {
   const { w, h } = useSpecialStyleProps();
   const S = useStyles();
 
@@ -91,18 +94,18 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
     onActive: (event) => {
       gestureTranslateX.value = event.translationX;
       gestureTranslateY.value = event.translationY;
-      gestureScale.value = withTiming(0.9, { duration: 200 });
+      gestureScale.value = withTiming(0.9, { duration: 200 * speed });
     },
     onEnd: (event) => {
       if (event.translationX > 100 || event.translationY > 100) {
         onClose();
-        gestureTranslateX.value = withTiming(0, { duration: 200 });
-        gestureTranslateY.value = withTiming(0, { duration: 200 });
-        gestureScale.value = withTiming(1, { duration: 200 });
+        gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
+        gestureTranslateY.value = withTiming(0, { duration: 200 * speed });
+        gestureScale.value = withTiming(1, { duration: 200 * speed });
       } else {
-        gestureTranslateX.value = withTiming(0, { duration: 200 });
-        gestureTranslateY.value = withTiming(0, { duration: 200 });
-        gestureScale.value = withTiming(1, { duration: 200 });
+        gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
+        gestureTranslateY.value = withTiming(0, { duration: 200 * speed });
+        gestureScale.value = withTiming(1, { duration: 200 * speed });
       }
     },
   });
@@ -135,10 +138,10 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
     const opacityValue = visible ? 1 : 0;
     const translateValue = visible ? 0 : 1;
 
-    height.value = withTiming(heightValue, { duration: 500 });
-    scaleX.value = withTiming(scaleXValue, { duration: 600 });
-    opacity.value = withTiming(opacityValue, { duration: 600 });
-    translate.value = withTiming(translateValue, { duration: 600 });
+    height.value = withTiming(heightValue, { duration: 300 * speed });
+    scaleX.value = withTiming(scaleXValue, { duration: 300 * speed });
+    opacity.value = withTiming(opacityValue, { duration: 400 * speed });
+    translate.value = withTiming(translateValue, { duration: 300 * speed });
   }, [translate, opacity, height, visible, h, scaleX, modalHorizontalScale, modalCloseHeight]);
 
   return (
@@ -154,7 +157,9 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
             {modal}
           </Animated.View>
         </PanGestureHandler>
-        <Animated.View style={backdropStyles} pointerEvents="none" />
+        <Animated.View style={backdropStyles} pointerEvents="none">
+          {backdrop}
+        </Animated.View>
       </Portal>
     </View>
   );
