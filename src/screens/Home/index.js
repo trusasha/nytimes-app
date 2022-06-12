@@ -5,7 +5,6 @@ import useStyles from './useStyles';
 import { configStore, storiesStore } from 'stores';
 import useNavigate from 'hooks/useNavigate';
 import HomeStoriesItem from './HomeStoriesItem';
-import AnimatedModal from 'components/AnimatedModal';
 import { PortalProvider } from '@gorhom/portal';
 
 const Home = () => {
@@ -38,7 +37,7 @@ const Home = () => {
   ];
 
   const renderItem = useCallback(
-    ({ item, index }) => <HomeStoriesItem item={item} index={index} offset={scrollOffset} />,
+    ({ item, index }) => <HomeStoriesItem item={item} offset={scrollOffset} />,
     [scrollOffset],
   );
 
