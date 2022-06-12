@@ -14,13 +14,6 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 
 /**
  * @typedef {{
- *  height?: number
- *  scale?: number
- * }} OpenedSizes
- */
-
-/**
- * @typedef {{
  *  top?: number
  * }} Offsets
  */
@@ -46,7 +39,6 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
  *  backdrop?: JSX.Element
  *  header?: JSX.Element
  *  offsets?: Offsets
- *  openedSizes?: OpenedSizes
  * }} AnimatedModalProps
  */
 
@@ -74,7 +66,6 @@ const AnimatedModal = ({
   backdrop,
   header,
   offsets,
-  openedSizes,
 }) => {
   const { w, h } = useSpecialStyleProps();
   const S = useStyles({ modalContainerStyle });
@@ -160,7 +151,6 @@ const AnimatedModal = ({
   /** @type {(visible: boolean) => void} */
   const animateModal = useCallback(
     (visible) => {
-      'worklet';
       const heightValue = visible ? h : modalCloseHeight;
       const scaleXValue = visible ? 1 : modalHorizontalScale;
       const opacityValue = visible ? 1 : 0;
