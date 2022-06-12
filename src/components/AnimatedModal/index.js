@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { View, TouchableOpacity, Text } from 'react-native';
 import useStyles from './useStyles';
@@ -12,7 +12,18 @@ import Animated, {
 } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
-const speed = 1;
+/**
+ * @typedef {{
+ *  height?: number
+ *  scale?: number
+ * }} OpenedSizes
+ */
+
+/**
+ * @typedef {{
+ *  top?: number
+ * }} Offsets
+ */
 
 /**
  * @typedef {{
@@ -25,6 +36,21 @@ const speed = 1;
  * }} Measures
  */
 
+/**
+ * @typedef {{
+ *  visible: boolean
+ *  setVisible: React.Dispatch<React.SetStateAction<boolean>>
+ *  children: JSX.Element
+ *  modal: JSX.Element
+ *  backdrop?: JSX.Element
+ *  header?: JSX.Element
+ *  offsets?: Offsets
+ *  openedSizes?: OpenedSizes
+ * }} AnimatedModalProps
+ */
+
+const speed = 1;
+
 /** @type {Measures} */
 const initialMeasures = {
   width: 0,
@@ -36,21 +62,18 @@ const initialMeasures = {
 };
 
 /**
- * @typedef {{
- *  visible: boolean
- *  setVisible: React.Dispatch<React.SetStateAction<boolean>>
- *  title?: string
- *  children: JSX.Element
- *  modal: JSX.Element
- *  backdrop?: JSX.Element
- *  offsets?: {top: number}
- * }} AnimatedModalProps
- */
-
-/**
  * @param {AnimatedModalProps} props
  */
-const AnimatedModal = ({ visible, setVisible, title, children, modal, backdrop, offsets }) => {
+const AnimatedModal = ({
+  visible,
+  setVisible,
+  children,
+  modal,
+  backdrop,
+  header,
+  offsets,
+  openedSizes,
+}) => {
   const { w, h } = useSpecialStyleProps();
   const S = useStyles();
 
@@ -67,7 +90,7 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, backdrop, 
   const onClose = useCallback(() => setVisible(false), [setVisible]);
 
   const onChildrenLayout = useCallback(
-    ({ nativeEvent, target }) =>
+    ({ target }) =>
       target.measure((x, y, width, height, pageX, pageY) => {
         childrenMeasures.current = {
           width,
@@ -132,17 +155,24 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, backdrop, 
   const backdropStyles = [S.backdrop, backdropStyle];
   const pointerEvents = visible ? 'auto' : 'none';
 
-  useEffect(() => {
-    const heightValue = visible ? h : modalCloseHeight;
-    const scaleXValue = visible ? 1 : modalHorizontalScale;
-    const opacityValue = visible ? 1 : 0;
-    const translateValue = visible ? 0 : 1;
+  /** @type {(visible: boolean) => void} */
+  const animateModal = useCallback(
+    (visible) => {
+      'worklet';
+      const heightValue = visible ? h : modalCloseHeight;
+      const scaleXValue = visible ? 1 : modalHorizontalScale;
+      const opacityValue = visible ? 1 : 0;
+      const translateValue = visible ? 0 : 1;
 
-    height.value = withTiming(heightValue, { duration: 300 * speed });
-    scaleX.value = withTiming(scaleXValue, { duration: 300 * speed });
-    opacity.value = withTiming(opacityValue, { duration: 400 * speed });
-    translate.value = withTiming(translateValue, { duration: 300 * speed });
-  }, [translate, opacity, height, visible, h, scaleX, modalHorizontalScale, modalCloseHeight]);
+      height.value = withTiming(heightValue, { duration: 300 * speed });
+      scaleX.value = withTiming(scaleXValue, { duration: 300 * speed });
+      opacity.value = withTiming(opacityValue, { duration: 400 * speed });
+      translate.value = withTiming(translateValue, { duration: 300 * speed });
+    },
+    [h, height, modalCloseHeight, modalHorizontalScale, opacity, scaleX, translate],
+  );
+
+  useEffect(() => animateModal(visible), [animateModal, visible]);
 
   return (
     <View onLayout={onChildrenLayout}>
@@ -150,15 +180,12 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, backdrop, 
       <Portal>
         <PanGestureHandler onGestureEvent={panGestureEvent}>
           <Animated.View style={modalStyles} pointerEvents={pointerEvents}>
-            <View style={S.header}>
-              <TouchableOpacity style={S.backButton} onPress={onClose} />
-              {!!title && <Text style={S.title} children={title} />}
-            </View>
+            {!!header && header}
             {modal}
           </Animated.View>
         </PanGestureHandler>
         <Animated.View style={backdropStyles} pointerEvents="none">
-          {backdrop}
+          {!!backdrop && backdrop}
         </Animated.View>
       </Portal>
     </View>
