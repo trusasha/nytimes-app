@@ -45,7 +45,12 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
     published: {
       ...getTextStyles(12, '400', 18, p.strokeSecondary),
     },
+    modalContainer: {
+      paddingTop: i.top,
+      backgroundColor: p.background,
+    },
     header: {
+      backgroundColor: p.background,
       padding: 12,
       height: 60,
       borderBottomWidth: 1,
@@ -64,6 +69,10 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
     },
     headerTitle: {
       paddingHorizontal: 48,
+      ...getTextStyles(14, '700', 22, p.stroke),
+    },
+    previewTitle: {
+      paddingHorizontal: 12,
       ...getTextStyles(14, '700', 22, p.stroke),
     },
   };

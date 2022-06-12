@@ -42,6 +42,7 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
  *  setVisible: React.Dispatch<React.SetStateAction<boolean>>
  *  children: JSX.Element
  *  modal: JSX.Element
+ *  modalContainerStyle?: import('react-native').ViewStyle
  *  backdrop?: JSX.Element
  *  header?: JSX.Element
  *  offsets?: Offsets
@@ -69,13 +70,14 @@ const AnimatedModal = ({
   setVisible,
   children,
   modal,
+  modalContainerStyle,
   backdrop,
   header,
   offsets,
   openedSizes,
 }) => {
   const { w, h } = useSpecialStyleProps();
-  const S = useStyles();
+  const S = useStyles({ modalContainerStyle });
 
   /** @type {React.MutableRefObject<Measures>} */
   const childrenMeasures = useRef(initialMeasures);

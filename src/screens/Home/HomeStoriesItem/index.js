@@ -36,7 +36,6 @@ const HomeStoriesItem = ({ item, offset }) => {
   const onModalClose = useCallback(() => setStoryVisible(false), []);
 
   const onPreviewOpen = useCallback(() => setPreviewVisible(true), []);
-  const onPreviewClose = useCallback(() => setPreviewVisible(false), []);
 
   const modal = useMemo(() => <HomeStoryModal item={item} />, [item]);
   const modalHeader = useMemo(
@@ -50,6 +49,14 @@ const HomeStoriesItem = ({ item, offset }) => {
   );
 
   const preview = useMemo(() => <HomeStoryPreviewModal item={item} />, [item]);
+  const previewHeader = useMemo(
+    () => (
+      <View style={S.header}>
+        <Text style={S.headerTitle} children={title} numberOfLines={1} />
+      </View>
+    ),
+    [S.header, S.headerTitle, title],
+  );
 
   const offsets = { top: -offset };
 
@@ -59,11 +66,13 @@ const HomeStoriesItem = ({ item, offset }) => {
         visible={previewVisible}
         setVisible={setPreviewVisible}
         modal={preview}
+        header={previewHeader}
         offsets={offsets}>
         <AnimatedModal
           visible={storyVisible}
           setVisible={setStoryVisible}
           modal={modal}
+          modalContainerStyle={S.modalContainer}
           header={modalHeader}
           offsets={offsets}>
           <TouchableOpacity
