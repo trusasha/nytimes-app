@@ -9,7 +9,7 @@ const R = configStore.routeNameLocalization;
 
 export const HomeTabs = () => {
   return (
-    <Tabs.Navigator>
+    <Tabs.Navigator screenOptions={{ headerShown: false }}>
       <Tabs.Screen name={R.Home} component={Home} />
       <Tabs.Screen name={R.Profile} component={Profile} />
     </Tabs.Navigator>
