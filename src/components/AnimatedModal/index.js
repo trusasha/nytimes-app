@@ -23,9 +23,7 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
  * width: number
  * height: number
  * xLeft: number
- * xRight: number
  * yTop: number
- * yBottom: number
  * }} Measures
  */
 
@@ -49,9 +47,7 @@ const initialMeasures = {
   width: 0,
   height: 0,
   xLeft: 0,
-  xRight: 0,
   yTop: 0,
-  yBottom: 0,
 };
 
 /**
@@ -89,12 +85,10 @@ const AnimatedModal = ({
           width,
           height,
           xLeft: Math.round(x + pageX),
-          xRight: w - Math.round(x + pageX),
           yTop: Math.round(y + pageY),
-          yBottom: h - Math.round(y + pageY) + height,
         };
       }),
-    [h, w],
+    [],
   );
 
   const opacity = useSharedValue(0);

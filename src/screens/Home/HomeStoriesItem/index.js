@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import AnimatedModal from 'components/AnimatedModal';
 import HomeStoryModal from '../HomeStoryModal';
 import HomeStoryPreviewModal from '../HomeStoryPreviewModal';
+import PreviewModal from 'components/PreviewModal';
 
 /**
  * @typedef {{
@@ -25,9 +26,6 @@ const HomeStoriesItem = ({ item, offset }) => {
 
   const [storyVisible, setStoryVisible] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
-
-  /** @type {React.MutableRefObject<TouchableOpacity>} */
-  const ref = useRef(null);
 
   const image = { uri: multimedia?.[0]?.url };
   const timeFrom = `${T.published}: ${dayjs(created_date).fromNow()}`;
@@ -62,7 +60,7 @@ const HomeStoriesItem = ({ item, offset }) => {
 
   return (
     <View style={S.container}>
-      <AnimatedModal
+      <PreviewModal
         visible={previewVisible}
         setVisible={setPreviewVisible}
         modal={preview}
@@ -76,10 +74,10 @@ const HomeStoriesItem = ({ item, offset }) => {
           header={modalHeader}
           offsets={offsets}>
           <TouchableOpacity
-            ref={ref}
             style={S.itemContainer}
-            onPress={onModalOpen}
-            onLongPress={onPreviewOpen}
+            // onPress={onModalOpen}
+            onPress={onPreviewOpen}
+            // onLongPress={onPreviewOpen}
             delayLongPress={300}>
             <Image style={S.image} source={image} />
             {/* <View style={S.content}>
@@ -89,7 +87,7 @@ const HomeStoriesItem = ({ item, offset }) => {
             </View> */}
           </TouchableOpacity>
         </AnimatedModal>
-      </AnimatedModal>
+      </PreviewModal>
     </View>
   );
 };
