@@ -1,17 +1,13 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, FlatList } from 'react-native';
 import useStyles from './useStyles';
-import { configStore, storiesStore } from 'stores';
-import useNavigate from 'hooks/useNavigate';
+import { storiesStore } from 'stores';
 import HomeStoriesItem from './HomeStoriesItem';
-import AnimatedModal from 'components/AnimatedModal';
 import { PortalProvider } from '@gorhom/portal';
 
 const Home = () => {
   const S = useStyles();
-  const T = configStore.localization;
-  const R = configStore.routeNameLocalization;
 
   const [scrollOffset, setScrollOffset] = useState(0);
 
@@ -38,7 +34,7 @@ const Home = () => {
   ];
 
   const renderItem = useCallback(
-    ({ item, index }) => <HomeStoriesItem item={item} index={index} offset={scrollOffset} />,
+    ({ item }) => <HomeStoriesItem item={item} offset={scrollOffset} />,
     [scrollOffset],
   );
 
@@ -47,8 +43,6 @@ const Home = () => {
   }, []);
 
   const keyExtractor = useCallback(({ title }) => title, []);
-
-  const navigate = useNavigate();
 
   return (
     <View style={S.container}>
