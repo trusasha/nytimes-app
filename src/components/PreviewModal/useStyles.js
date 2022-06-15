@@ -21,6 +21,11 @@ const useStyles = newUseStyles(
       height: h,
       backgroundColor: 'black',
     },
+    actionModal: {
+      position: 'absolute',
+      zIndex: 9,
+      top: 0,
+    },
   }),
 );
 

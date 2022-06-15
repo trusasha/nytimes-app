@@ -55,6 +55,20 @@ const HomeStoriesItem = ({ item, offset }) => {
     ),
     [S.header, S.headerTitle, title],
   );
+  const previewActionModal = useMemo(
+    () => (
+      <View
+        style={{
+          width: 150,
+          height: 80,
+          backgroundColor: 'white',
+          borderRadius: 12,
+          opacity: 0.9,
+        }}
+      />
+    ),
+    [],
+  );
 
   const offsets = { top: -offset };
 
@@ -63,6 +77,7 @@ const HomeStoriesItem = ({ item, offset }) => {
       <PreviewModal
         visible={previewVisible}
         setVisible={setPreviewVisible}
+        actionModal={previewActionModal}
         modal={preview}
         header={previewHeader}
         offsets={offsets}>
@@ -75,9 +90,8 @@ const HomeStoriesItem = ({ item, offset }) => {
           offsets={offsets}>
           <TouchableOpacity
             style={S.itemContainer}
-            // onPress={onModalOpen}
-            onPress={onPreviewOpen}
-            // onLongPress={onPreviewOpen}
+            onPress={onModalOpen}
+            onLongPress={onPreviewOpen}
             delayLongPress={300}>
             <Image style={S.image} source={image} />
             {/* <View style={S.content}>
