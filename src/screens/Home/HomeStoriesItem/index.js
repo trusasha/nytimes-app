@@ -55,6 +55,20 @@ const HomeStoriesItem = ({ item, offset }) => {
     ),
     [S.header, S.headerTitle, title],
   );
+  const previewActionModal = useMemo(
+    () => (
+      <View
+        style={{
+          width: 150,
+          height: 80,
+          backgroundColor: 'white',
+          borderRadius: 12,
+          opacity: 0.9,
+        }}
+      />
+    ),
+    [],
+  );
 
   const offsets = { top: -offset };
 
@@ -63,6 +77,7 @@ const HomeStoriesItem = ({ item, offset }) => {
       <PreviewModal
         visible={previewVisible}
         setVisible={setPreviewVisible}
+        actionModal={previewActionModal}
         modal={preview}
         header={previewHeader}
         offsets={offsets}>
