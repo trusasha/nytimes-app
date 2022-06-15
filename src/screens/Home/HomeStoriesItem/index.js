@@ -90,9 +90,8 @@ const HomeStoriesItem = ({ item, offset }) => {
           offsets={offsets}>
           <TouchableOpacity
             style={S.itemContainer}
-            // onPress={onModalOpen}
-            onPress={onPreviewOpen}
-            // onLongPress={onPreviewOpen}
+            onPress={onModalOpen}
+            onLongPress={onPreviewOpen}
             delayLongPress={300}>
             <Image style={S.image} source={image} />
             {/* <View style={S.content}>

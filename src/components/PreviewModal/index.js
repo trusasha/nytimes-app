@@ -129,7 +129,10 @@ const PreviewModal = ({
   const middlePosition = !isLeft && !isRight && (w - modalMeasures.current.width) / 2;
   const rightPosition = isRight && w - margin - modalMeasures.current.width;
 
-  const openModalTopOffset = 200;
+  const openModalTopOffset = Math.min(
+    childrenMeasures.current.yTop + (offsets?.top || 0),
+    h - modalMeasures.current.height - actionMeasures.current.height - margin - 100,
+  );
   const openModalLeftOffset = leftPosition || rightPosition || middlePosition;
 
   const actionChildrenHorizontalOffset =
@@ -276,6 +279,7 @@ const PreviewModal = ({
       openActionModalLeftOffset,
       openActionModalTopOffset,
       openModalLeftOffset,
+      openModalTopOffset,
       scaleX,
       scaleY,
       translateX,
