@@ -185,7 +185,12 @@ const PreviewModal = ({
       actionGestureTranslate.value = withTiming(1, { duration: 200 * speed });
     },
     onEnd: (event) => {
-      if (event.translationX > 100 || event.translationY > 100) {
+      if (
+        event.translationX > 100 ||
+        event.translationX < -100 ||
+        event.translationY > 100 ||
+        event.translationY < -100
+      ) {
         onClose();
       }
       gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
