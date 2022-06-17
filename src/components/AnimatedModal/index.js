@@ -1,11 +1,15 @@
-import React, { useCallback, useRef, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View } from 'react-native';
 import useStyles from './useStyles';
 import { Portal } from '@gorhom/portal';
 import { useSpecialStyleProps } from 'hooks/newUseStyles';
 import Animated, {
+  measure,
+  runOnJS,
+  runOnUI,
   useAnimatedGestureHandler,
+  useAnimatedRef,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -22,9 +26,20 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
  * @typedef {{
  * width: number
  * height: number
- * xLeft: number
- * yTop: number
+ * x: number
+ * y: number
+ * pageX: number
+ * pageY: number
  * }} Measures
+ */
+
+/**
+ * @typedef {{
+ * translateX: number
+ * translateY: number
+ * height: number
+ * scaleX: number
+ * }} ModalPosition
  */
 
 /**
@@ -42,14 +57,6 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 
 const speed = 1;
 
-/** @type {Measures} */
-const initialMeasures = {
-  width: 0,
-  height: 0,
-  xLeft: 0,
-  yTop: 0,
-};
-
 /**
  * @param {AnimatedModalProps} props
  */
@@ -66,35 +73,18 @@ const AnimatedModal = ({
   const { w, h } = useSpecialStyleProps();
   const S = useStyles({ modalContainerStyle });
 
-  /** @type {React.MutableRefObject<Measures>} */
-  const childrenMeasures = useRef(initialMeasures);
+  /** @type {React.RefObject<View>} */
+  const childrenMeasures = useAnimatedRef();
 
-  const horizontalOffsets = (w - childrenMeasures.current.width) / 2;
-
-  const modalHorizontalScale = childrenMeasures.current.width / w;
-  const modalTopOffset = childrenMeasures.current.yTop + (offsets?.top || 0);
-  const modalLeftOffset = childrenMeasures.current.xLeft - horizontalOffsets;
-  const modalCloseHeight = childrenMeasures.current.height;
-
-  const onClose = useCallback(() => setVisible(false), [setVisible]);
-
-  const onChildrenLayout = useCallback(
-    ({ target }) =>
-      target.measure((x, y, width, height, pageX, pageY) => {
-        childrenMeasures.current = {
-          width,
-          height,
-          xLeft: Math.round(x + pageX),
-          yTop: Math.round(y + pageY),
-        };
-      }),
-    [],
-  );
+  const onClose = useCallback(() => {
+    setVisible(false);
+  }, [setVisible]);
 
   const opacity = useSharedValue(0);
-  const translate = useSharedValue(1);
-  const height = useSharedValue(childrenMeasures.current.height);
-  const scaleX = useSharedValue(modalHorizontalScale);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const height = useSharedValue(0);
+  const scaleX = useSharedValue(1);
 
   const gestureTranslateX = useSharedValue(0);
   const gestureTranslateY = useSharedValue(0);
@@ -108,7 +98,7 @@ const AnimatedModal = ({
     },
     onEnd: (event) => {
       if (event.translationX > 100 || event.translationY > 100) {
-        onClose();
+        runOnJS(onClose)();
         gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
         gestureTranslateY.value = withTiming(0, { duration: 200 * speed });
         gestureScale.value = withTiming(1, { duration: 200 * speed });
@@ -120,19 +110,18 @@ const AnimatedModal = ({
     },
   });
 
-  const reanimatedStyle = useAnimatedStyle(
-    () => ({
+  const reanimatedStyle = useAnimatedStyle(() => {
+    return {
       height: height.value,
       opacity: opacity.value,
       transform: [
-        { translateY: translate.value * modalTopOffset + gestureTranslateY.value },
-        { translateX: translate.value * modalLeftOffset + gestureTranslateX.value },
+        { translateY: translateY.value + gestureTranslateY.value },
+        { translateX: translateX.value + gestureTranslateX.value },
         { scaleX: scaleX.value },
         { scale: gestureScale.value },
       ],
-    }),
-    [modalTopOffset, modalLeftOffset],
-  );
+    };
+  }, []);
 
   const backdropStyle = useAnimatedStyle(() => ({
     opacity: opacity.value * 0.5,
@@ -142,26 +131,55 @@ const AnimatedModal = ({
   const backdropStyles = [S.backdrop, backdropStyle];
   const pointerEvents = visible ? 'auto' : 'none';
 
-  /** @type {(visible: boolean) => void} */
-  const animateModal = useCallback(
-    (visible) => {
-      const heightValue = visible ? h : modalCloseHeight;
-      const scaleXValue = visible ? 1 : modalHorizontalScale;
-      const opacityValue = visible ? 1 : 0;
-      const translateValue = visible ? 0 : 1;
-
-      height.value = withTiming(heightValue, { duration: 300 * speed });
-      scaleX.value = withTiming(scaleXValue, { duration: 300 * speed });
-      opacity.value = withTiming(opacityValue, { duration: 400 * speed });
-      translate.value = withTiming(translateValue, { duration: 300 * speed });
+  /** @type {(measures: Measures) => ModalPosition} */
+  const getCloseParameters = useCallback(
+    (measures) => {
+      'worklet';
+      return {
+        translateX: measures.pageX - (w - measures.width) / 2,
+        translateY: measures.pageY + (offsets?.top || 0),
+        height: measures.height,
+        scaleX: measures.width / w,
+      };
     },
-    [h, height, modalCloseHeight, modalHorizontalScale, opacity, scaleX, translate],
+    [offsets?.top, w],
   );
 
-  useEffect(() => animateModal(visible), [animateModal, visible]);
+  const showModal = useCallback(() => {
+    runOnUI(() => {
+      'worklet';
+      const parameters = getCloseParameters(measure(childrenMeasures));
+
+      translateX.value = parameters.translateX;
+      translateY.value = parameters.translateY;
+      height.value = parameters.height;
+      scaleX.value = parameters.scaleX;
+
+      height.value = withTiming(h, { duration: 300 * speed });
+      scaleX.value = withTiming(1, { duration: 300 * speed });
+      opacity.value = withTiming(1, { duration: 400 * speed });
+      translateX.value = withTiming(0, { duration: 300 * speed });
+      translateY.value = withTiming(0, { duration: 300 * speed });
+    })();
+  }, [childrenMeasures, getCloseParameters, h, height, opacity, scaleX, translateX, translateY]);
+
+  const hideModal = useCallback(() => {
+    runOnUI(() => {
+      'worklet';
+      const parameters = getCloseParameters(measure(childrenMeasures));
+
+      height.value = withTiming(parameters.height, { duration: 300 * speed });
+      scaleX.value = withTiming(parameters.scaleX, { duration: 300 * speed });
+      opacity.value = withTiming(0, { duration: 400 * speed });
+      translateX.value = withTiming(parameters.translateX, { duration: 300 * speed });
+      translateY.value = withTiming(parameters.translateY, { duration: 300 * speed });
+    })();
+  }, [childrenMeasures, getCloseParameters, height, opacity, scaleX, translateX, translateY]);
+
+  useEffect(() => (visible ? showModal() : hideModal()), [hideModal, showModal, visible]);
 
   return (
-    <View onLayout={onChildrenLayout}>
+    <View ref={childrenMeasures}>
       {children}
       <Portal>
         <PanGestureHandler onGestureEvent={panGestureEvent}>
