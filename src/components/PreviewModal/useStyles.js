@@ -1,4 +1,3 @@
-import getTextStyles from 'helpers/getTextStyles';
 import newUseStyles from 'hooks/newUseStyles';
 
 const useStyles = newUseStyles(
@@ -8,9 +7,10 @@ const useStyles = newUseStyles(
     { modalContainerStyle, backdropStyles },
   ) => ({
     container: {
+      backgroundColor: 'red',
       zIndex: 10,
       position: 'absolute',
-      width: w,
+      width: w * 0.8,
       borderRadius: 24,
       overflow: 'hidden',
       ...modalContainerStyle,
@@ -19,8 +19,13 @@ const useStyles = newUseStyles(
       position: 'absolute',
       width: w,
       height: h,
-      backgroundColor: 'black',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       ...backdropStyles,
+    },
+    actionModal: {
+      position: 'absolute',
+      zIndex: 9,
+      top: 0,
     },
   }),
 );

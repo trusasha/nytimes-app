@@ -1,11 +1,15 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View } from 'react-native';
 import useStyles from './useStyles';
 import { Portal } from '@gorhom/portal';
 import { useSpecialStyleProps } from 'hooks/newUseStyles';
 import Animated, {
+  measure,
+  runOnJS,
+  runOnUI,
   useAnimatedGestureHandler,
+  useAnimatedRef,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -14,74 +18,75 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 
 /**
  * @typedef {{
+ *  top?: number
+ * }} Offsets
+ */
+
+/**
+ * @typedef {{
  * width: number
  * height: number
- * xLeft: number
- * xRight: number
- * yTop: number
- * yBottom: number
+ * x: number
+ * y: number
+ * pageX: number
+ * pageY: number
  * }} Measures
  */
 
-/** @type {Measures} */
-const initialMeasures = {
-  width: 0,
-  height: 0,
-  xLeft: 0,
-  xRight: 0,
-  yTop: 0,
-  yBottom: 0,
-};
+/**
+ * @typedef {{
+ * translateX: number
+ * translateY: number
+ * height: number
+ * scaleX: number
+ * }} ModalPosition
+ */
 
 /**
  * @typedef {{
  *  visible: boolean
  *  setVisible: React.Dispatch<React.SetStateAction<boolean>>
- *  title?: string
  *  children: JSX.Element
  *  modal: JSX.Element
- *  offsets?: {top: number}
+ *  modalContainerStyle?: import('react-native').ViewStyle
+ *  backdrop?: JSX.Element
+ *  backdropStyles?: import('react-native').ViewStyle
+ *  header?: JSX.Element
+ *  offsets?: Offsets
  * }} AnimatedModalProps
  */
+
+const speed = 1;
 
 /**
  * @param {AnimatedModalProps} props
  */
-const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets }) => {
+const AnimatedModal = ({
+  visible,
+  setVisible,
+  children,
+  modal,
+  modalContainerStyle,
+  backdrop,
+  backdropStyles,
+  header,
+  offsets,
+}) => {
   const { w, h } = useSpecialStyleProps();
-  const S = useStyles();
+  const S = useStyles({ modalContainerStyle, backdropStyles });
 
-  /** @type {React.MutableRefObject<Measures>} */
-  const childrenMeasures = useRef(initialMeasures);
+  /** @type {React.RefObject<View>} */
+  const childrenMeasures = useAnimatedRef();
 
-  const horizontalOffsets = (w - childrenMeasures.current.width) / 2;
-
-  const modalHorizontalScale = childrenMeasures.current.width / w;
-  const modalTopOffset = childrenMeasures.current.yTop + (offsets?.top || 0);
-  const modalLeftOffset = childrenMeasures.current.xLeft - horizontalOffsets;
-  const modalCloseHeight = childrenMeasures.current.height;
-
-  const onClose = useCallback(() => setVisible(false), [setVisible]);
-
-  const onChildrenLayout = useCallback(
-    ({ nativeEvent, target }) =>
-      target.measure((x, y, width, height, pageX, pageY) => {
-        childrenMeasures.current = {
-          width,
-          height,
-          xLeft: Math.round(x + pageX),
-          xRight: w - Math.round(x + pageX),
-          yTop: Math.round(y + pageY),
-          yBottom: h - Math.round(y + pageY) + height,
-        };
-      }),
-    [h, w],
-  );
+  const onClose = useCallback(() => {
+    setVisible(false);
+  }, [setVisible]);
 
   const opacity = useSharedValue(0);
-  const translate = useSharedValue(1);
-  const height = useSharedValue(childrenMeasures.current.height);
-  const scaleX = useSharedValue(modalHorizontalScale);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const height = useSharedValue(0);
+  const scaleX = useSharedValue(1);
 
   const gestureTranslateX = useSharedValue(0);
   const gestureTranslateY = useSharedValue(0);
@@ -91,70 +96,103 @@ const AnimatedModal = ({ visible, setVisible, title, children, modal, offsets })
     onActive: (event) => {
       gestureTranslateX.value = event.translationX;
       gestureTranslateY.value = event.translationY;
-      gestureScale.value = withTiming(0.9, { duration: 200 });
+      gestureScale.value = withTiming(0.9, { duration: 200 * speed });
     },
     onEnd: (event) => {
       if (event.translationX > 100 || event.translationY > 100) {
-        onClose();
-        gestureTranslateX.value = withTiming(0, { duration: 200 });
-        gestureTranslateY.value = withTiming(0, { duration: 200 });
-        gestureScale.value = withTiming(1, { duration: 200 });
+        runOnJS(onClose)();
+        gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
+        gestureTranslateY.value = withTiming(0, { duration: 200 * speed });
+        gestureScale.value = withTiming(1, { duration: 200 * speed });
       } else {
-        gestureTranslateX.value = withTiming(0, { duration: 200 });
-        gestureTranslateY.value = withTiming(0, { duration: 200 });
-        gestureScale.value = withTiming(1, { duration: 200 });
+        gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
+        gestureTranslateY.value = withTiming(0, { duration: 200 * speed });
+        gestureScale.value = withTiming(1, { duration: 200 * speed });
       }
     },
   });
 
-  const reanimatedStyle = useAnimatedStyle(
-    () => ({
+  const reanimatedStyle = useAnimatedStyle(() => {
+    return {
       height: height.value,
       opacity: opacity.value,
       transform: [
-        { translateY: translate.value * modalTopOffset + gestureTranslateY.value },
-        { translateX: translate.value * modalLeftOffset + gestureTranslateX.value },
+        { translateY: translateY.value + gestureTranslateY.value },
+        { translateX: translateX.value + gestureTranslateX.value },
         { scaleX: scaleX.value },
         { scale: gestureScale.value },
       ],
-    }),
-    [modalTopOffset, modalLeftOffset],
-  );
+    };
+  }, []);
 
   const backdropStyle = useAnimatedStyle(() => ({
     opacity: opacity.value * 0.5,
   }));
 
-  const modalStyles = [S.container, reanimatedStyle];
-  const backdropStyles = [S.backdrop, backdropStyle];
+  const modalAnimatedStyles = [S.container, reanimatedStyle];
+  const backdropAnimatedStyles = [S.backdrop, backdropStyle];
   const pointerEvents = visible ? 'auto' : 'none';
 
-  useEffect(() => {
-    const heightValue = visible ? h : modalCloseHeight;
-    const scaleXValue = visible ? 1 : modalHorizontalScale;
-    const opacityValue = visible ? 1 : 0;
-    const translateValue = visible ? 0 : 1;
+  /** @type {(measures: Measures) => ModalPosition} */
+  const getCloseParameters = useCallback(
+    (measures) => {
+      'worklet';
+      return {
+        translateX: measures.pageX - (w - measures.width) / 2,
+        translateY: measures.pageY + (offsets?.top || 0),
+        height: measures.height,
+        scaleX: measures.width / w,
+      };
+    },
+    [offsets?.top, w],
+  );
 
-    height.value = withTiming(heightValue, { duration: 500 });
-    scaleX.value = withTiming(scaleXValue, { duration: 600 });
-    opacity.value = withTiming(opacityValue, { duration: 600 });
-    translate.value = withTiming(translateValue, { duration: 600 });
-  }, [translate, opacity, height, visible, h, scaleX, modalHorizontalScale, modalCloseHeight]);
+  const showModal = useCallback(() => {
+    runOnUI(() => {
+      'worklet';
+      const parameters = getCloseParameters(measure(childrenMeasures));
+
+      translateX.value = parameters.translateX;
+      translateY.value = parameters.translateY;
+      height.value = parameters.height;
+      scaleX.value = parameters.scaleX;
+
+      height.value = withTiming(h, { duration: 300 * speed });
+      scaleX.value = withTiming(1, { duration: 300 * speed });
+      opacity.value = withTiming(1, { duration: 400 * speed });
+      translateX.value = withTiming(0, { duration: 300 * speed });
+      translateY.value = withTiming(0, { duration: 300 * speed });
+    })();
+  }, [childrenMeasures, getCloseParameters, h, height, opacity, scaleX, translateX, translateY]);
+
+  const hideModal = useCallback(() => {
+    runOnUI(() => {
+      'worklet';
+      const parameters = getCloseParameters(measure(childrenMeasures));
+
+      height.value = withTiming(parameters.height, { duration: 300 * speed });
+      scaleX.value = withTiming(parameters.scaleX, { duration: 300 * speed });
+      opacity.value = withTiming(0, { duration: 400 * speed });
+      translateX.value = withTiming(parameters.translateX, { duration: 300 * speed });
+      translateY.value = withTiming(parameters.translateY, { duration: 300 * speed });
+    })();
+  }, [childrenMeasures, getCloseParameters, height, opacity, scaleX, translateX, translateY]);
+
+  useEffect(() => (visible ? showModal() : hideModal()), [hideModal, showModal, visible]);
 
   return (
-    <View onLayout={onChildrenLayout}>
+    <View ref={childrenMeasures}>
       {children}
       <Portal>
         <PanGestureHandler onGestureEvent={panGestureEvent}>
-          <Animated.View style={modalStyles} pointerEvents={pointerEvents}>
-            <View style={S.header}>
-              <TouchableOpacity style={S.backButton} onPress={onClose} />
-              {!!title && <Text style={S.title} children={title} />}
-            </View>
+          <Animated.View style={modalAnimatedStyles} pointerEvents={pointerEvents}>
+            {!!header && header}
             {modal}
           </Animated.View>
         </PanGestureHandler>
-        <Animated.View style={backdropStyles} pointerEvents="none" />
+        <Animated.View style={backdropAnimatedStyles} pointerEvents="none">
+          {!!backdrop && backdrop}
+        </Animated.View>
       </Portal>
     </View>
   );
