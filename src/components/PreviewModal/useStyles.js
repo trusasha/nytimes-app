@@ -3,8 +3,8 @@ import newUseStyles from 'hooks/newUseStyles';
 const useStyles = newUseStyles(
   (
     { p, w, h, l, n, i },
-    /** @type {{modalContainerStyle: import('react-native').ViewStyle}} */
-    { modalContainerStyle },
+    /** @type {{modalContainerStyle: import('react-native').ViewStyle, backdropStyles: import('react-native').ViewStyle}} */
+    { modalContainerStyle, backdropStyles },
   ) => ({
     container: {
       backgroundColor: 'red',
@@ -19,7 +19,8 @@ const useStyles = newUseStyles(
       position: 'absolute',
       width: w,
       height: h,
-      backgroundColor: 'black',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      ...backdropStyles,
     },
     actionModal: {
       position: 'absolute',
