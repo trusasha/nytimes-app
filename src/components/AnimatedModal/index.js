@@ -50,6 +50,7 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
  *  modal: JSX.Element
  *  modalContainerStyle?: import('react-native').ViewStyle
  *  backdrop?: JSX.Element
+ *  backdropStyles?: import('react-native').ViewStyle
  *  header?: JSX.Element
  *  offsets?: Offsets
  * }} AnimatedModalProps
@@ -67,11 +68,12 @@ const AnimatedModal = ({
   modal,
   modalContainerStyle,
   backdrop,
+  backdropStyles,
   header,
   offsets,
 }) => {
   const { w, h } = useSpecialStyleProps();
-  const S = useStyles({ modalContainerStyle });
+  const S = useStyles({ modalContainerStyle, backdropStyles });
 
   /** @type {React.RefObject<View>} */
   const childrenMeasures = useAnimatedRef();
@@ -127,8 +129,8 @@ const AnimatedModal = ({
     opacity: opacity.value * 0.5,
   }));
 
-  const modalStyles = [S.container, reanimatedStyle];
-  const backdropStyles = [S.backdrop, backdropStyle];
+  const modalAnimatedStyles = [S.container, reanimatedStyle];
+  const backdropAnimatedStyles = [S.backdrop, backdropStyle];
   const pointerEvents = visible ? 'auto' : 'none';
 
   /** @type {(measures: Measures) => ModalPosition} */
@@ -183,12 +185,12 @@ const AnimatedModal = ({
       {children}
       <Portal>
         <PanGestureHandler onGestureEvent={panGestureEvent}>
-          <Animated.View style={modalStyles} pointerEvents={pointerEvents}>
+          <Animated.View style={modalAnimatedStyles} pointerEvents={pointerEvents}>
             {!!header && header}
             {modal}
           </Animated.View>
         </PanGestureHandler>
-        <Animated.View style={backdropStyles} pointerEvents="none">
+        <Animated.View style={backdropAnimatedStyles} pointerEvents="none">
           {!!backdrop && backdrop}
         </Animated.View>
       </Portal>

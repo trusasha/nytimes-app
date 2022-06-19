@@ -4,8 +4,8 @@ import newUseStyles from 'hooks/newUseStyles';
 const useStyles = newUseStyles(
   (
     { p, w, h, l, n, i },
-    /** @type {{modalContainerStyle: import('react-native').ViewStyle}} */
-    { modalContainerStyle },
+    /** @type {{modalContainerStyle: import('react-native').ViewStyle, backdropStyles: import('react-native').ViewStyle}} */
+    { modalContainerStyle, backdropStyles },
   ) => ({
     container: {
       zIndex: 10,
@@ -20,6 +20,7 @@ const useStyles = newUseStyles(
       width: w,
       height: h,
       backgroundColor: 'black',
+      ...backdropStyles,
     },
   }),
 );
