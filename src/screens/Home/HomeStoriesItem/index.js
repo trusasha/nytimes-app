@@ -12,14 +12,13 @@ import PreviewModal from 'components/PreviewModal';
 /**
  * @typedef {{
  *  item: Story
- *  offset: number
  * }} HomeStoriesItemProps
  */
 
 /**
  * @param {HomeStoriesItemProps} props
  */
-const HomeStoriesItem = ({ item, offset }) => {
+const HomeStoriesItem = ({ item }) => {
   const { title, byline, created_date, multimedia } = item;
   const T = configStore.localization;
   const S = useStyles();
@@ -70,8 +69,6 @@ const HomeStoriesItem = ({ item, offset }) => {
     [],
   );
 
-  const offsets = { top: -offset };
-
   return (
     <View style={S.container}>
       <PreviewModal
@@ -79,15 +76,13 @@ const HomeStoriesItem = ({ item, offset }) => {
         setVisible={setPreviewVisible}
         actionModal={previewActionModal}
         modal={preview}
-        header={previewHeader}
-        offsets={offsets}>
+        header={previewHeader}>
         <AnimatedModal
           visible={storyVisible}
           setVisible={setStoryVisible}
           modal={modal}
           modalContainerStyle={S.modalContainer}
-          header={modalHeader}
-          offsets={offsets}>
+          header={modalHeader}>
           <TouchableOpacity
             style={S.itemContainer}
             onPress={onModalOpen}
