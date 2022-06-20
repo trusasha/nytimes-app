@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { View, TouchableOpacity } from 'react-native';
 import useStyles from './useStyles';
-import { Portal } from '@gorhom/portal';
+import { Portal, PortalProvider } from '@gorhom/portal';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   measure,
@@ -264,45 +264,47 @@ const PreviewModal = ({
     runOnUI(() => {
       'worklet';
 
-      scaleX.value = 1;
-      scaleY.value = 1;
+      try {
+        scaleX.value = 1;
+        scaleY.value = 1;
 
-      const children = measure(childrenMeasures);
-      const modal = measure(modalMeasures);
-      const header = measure(headerMeasures);
-      const action = measure(actionMeasures);
+        const children = measure(childrenMeasures);
+        const modal = measure(modalMeasures);
+        const header = measure(headerMeasures);
+        const action = measure(actionMeasures);
 
-      const startPosition = getModalCloseParameters(children, modal, header);
-      const finishPosition = getModalOpenParameters(children, modal, action);
+        const startPosition = getModalCloseParameters(children, modal, header);
+        const finishPosition = getModalOpenParameters(children, modal, action);
 
-      translateX.value = startPosition.translateX;
-      translateY.value = startPosition.translateY;
-      scaleX.value = startPosition.scaleX;
-      scaleY.value = startPosition.scaleY;
-      opacity.value = 1;
+        translateX.value = startPosition.translateX;
+        translateY.value = startPosition.translateY;
+        scaleX.value = startPosition.scaleX;
+        scaleY.value = startPosition.scaleY;
+        opacity.value = 1;
 
-      backdropOpacity.value = withTiming(1, { duration: 300 * speed });
-      translateX.value = withTiming(finishPosition.translateX, { duration: 300 * speed });
-      translateY.value = withTiming(finishPosition.translateY, { duration: 300 * speed });
-      scaleX.value = withTiming(finishPosition.scaleX, { duration: 300 * speed });
-      scaleY.value = withTiming(finishPosition.scaleY, { duration: 300 * speed });
+        backdropOpacity.value = withTiming(1, { duration: 300 * speed });
+        translateX.value = withTiming(finishPosition.translateX, { duration: 300 * speed });
+        translateY.value = withTiming(finishPosition.translateY, { duration: 300 * speed });
+        scaleX.value = withTiming(finishPosition.scaleX, { duration: 300 * speed });
+        scaleY.value = withTiming(finishPosition.scaleY, { duration: 300 * speed });
 
-      if (haveActionModal) {
-        const actionStartPosition = getActionCloseParameters(children, action);
-        const actionFinishPosition = getActionOpenParameters(children, modal, action);
-        actionTranslateX.value = actionStartPosition.translateX;
-        actionTranslateY.value = actionStartPosition.translateY;
-        actionScale.value = actionStartPosition.scale;
-        actionTranslateX.value = withTiming(actionFinishPosition.translateX, {
-          duration: 300 * speed,
-        });
-        actionTranslateY.value = withTiming(actionFinishPosition.translateY, {
-          duration: 300 * speed,
-        });
-        actionScale.value = withTiming(actionFinishPosition.scale, {
-          duration: 300 * speed,
-        });
-      }
+        if (haveActionModal) {
+          const actionStartPosition = getActionCloseParameters(children, action);
+          const actionFinishPosition = getActionOpenParameters(children, modal, action);
+          actionTranslateX.value = actionStartPosition.translateX;
+          actionTranslateY.value = actionStartPosition.translateY;
+          actionScale.value = actionStartPosition.scale;
+          actionTranslateX.value = withTiming(actionFinishPosition.translateX, {
+            duration: 300 * speed,
+          });
+          actionTranslateY.value = withTiming(actionFinishPosition.translateY, {
+            duration: 300 * speed,
+          });
+          actionScale.value = withTiming(actionFinishPosition.scale, {
+            duration: 300 * speed,
+          });
+        }
+      } catch {}
     })();
   }, [
     actionMeasures,
@@ -329,42 +331,44 @@ const PreviewModal = ({
     runOnUI(() => {
       'worklet';
 
-      const children = measure(childrenMeasures);
-      const modal = measure(modalMeasures);
-      const header = measure(headerMeasures);
-      const action = measure(actionMeasures);
+      try {
+        const children = measure(childrenMeasures);
+        const modal = measure(modalMeasures);
+        const header = measure(headerMeasures);
+        const action = measure(actionMeasures);
 
-      const startPosition = getModalCloseParameters(children, modal, header);
+        const startPosition = getModalCloseParameters(children, modal, header);
 
-      opacity.value = withTiming(0);
-      backdropOpacity.value = withTiming(0, { duration: 300 * speed });
-      translateX.value = withTiming(startPosition.translateX, { duration: 300 * speed });
-      translateY.value = withTiming(startPosition.translateY, { duration: 300 * speed });
-      scaleX.value = withTiming(startPosition.scaleX, { duration: 300 * speed }, () => {
-        scaleX.value = 1;
-      });
-      scaleY.value = withTiming(startPosition.scaleY, { duration: 300 * speed }, () => {
-        scaleY.value = 1;
-      });
-
-      if (haveActionModal) {
-        const actionStartPosition = getActionCloseParameters(children, action);
-        actionTranslateX.value = withTiming(actionStartPosition.translateX, {
-          duration: 300 * speed,
+        opacity.value = withTiming(0);
+        backdropOpacity.value = withTiming(0, { duration: 300 * speed });
+        translateX.value = withTiming(startPosition.translateX, { duration: 300 * speed });
+        translateY.value = withTiming(startPosition.translateY, { duration: 300 * speed });
+        scaleX.value = withTiming(startPosition.scaleX, { duration: 300 * speed }, () => {
+          scaleX.value = 1;
         });
-        actionTranslateY.value = withTiming(actionStartPosition.translateY, {
-          duration: 300 * speed,
+        scaleY.value = withTiming(startPosition.scaleY, { duration: 300 * speed }, () => {
+          scaleY.value = 1;
         });
-        actionScale.value = withTiming(
-          actionStartPosition.scale,
-          {
+
+        if (haveActionModal) {
+          const actionStartPosition = getActionCloseParameters(children, action);
+          actionTranslateX.value = withTiming(actionStartPosition.translateX, {
             duration: 300 * speed,
-          },
-          () => {
-            actionScale.value = 1;
-          },
-        );
-      }
+          });
+          actionTranslateY.value = withTiming(actionStartPosition.translateY, {
+            duration: 300 * speed,
+          });
+          actionScale.value = withTiming(
+            actionStartPosition.scale,
+            {
+              duration: 300 * speed,
+            },
+            () => {
+              actionScale.value = 1;
+            },
+          );
+        }
+      } catch {}
     })();
   }, [
     actionMeasures,
@@ -390,7 +394,7 @@ const PreviewModal = ({
   return (
     <View ref={childrenMeasures}>
       {children}
-      <Portal>
+      <Portal hostName="animated-modal-provider">
         <PanGestureHandler onGestureEvent={panGestureEvent}>
           <Animated.View
             style={modalAnimatedStyles}

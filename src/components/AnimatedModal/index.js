@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { View } from 'react-native';
 import useStyles from './useStyles';
-import { Portal } from '@gorhom/portal';
+import { Portal, PortalProvider } from '@gorhom/portal';
 import { useSpecialStyleProps } from 'hooks/newUseStyles';
 import Animated, {
   measure,
@@ -150,31 +150,35 @@ const AnimatedModal = ({
   const showModal = useCallback(() => {
     runOnUI(() => {
       'worklet';
-      const parameters = getCloseParameters(measure(childrenMeasures));
+      try {
+        const parameters = getCloseParameters(measure(childrenMeasures));
 
-      translateX.value = parameters.translateX;
-      translateY.value = parameters.translateY;
-      height.value = parameters.height;
-      scaleX.value = parameters.scaleX;
+        translateX.value = parameters.translateX;
+        translateY.value = parameters.translateY;
+        height.value = parameters.height;
+        scaleX.value = parameters.scaleX;
 
-      height.value = withTiming(h, { duration: 300 * speed });
-      scaleX.value = withTiming(1, { duration: 300 * speed });
-      opacity.value = withTiming(1, { duration: 400 * speed });
-      translateX.value = withTiming(0, { duration: 300 * speed });
-      translateY.value = withTiming(0, { duration: 300 * speed });
+        height.value = withTiming(h, { duration: 300 * speed });
+        scaleX.value = withTiming(1, { duration: 300 * speed });
+        opacity.value = withTiming(1, { duration: 400 * speed });
+        translateX.value = withTiming(0, { duration: 300 * speed });
+        translateY.value = withTiming(0, { duration: 300 * speed });
+      } catch {}
     })();
   }, [childrenMeasures, getCloseParameters, h, height, opacity, scaleX, translateX, translateY]);
 
   const hideModal = useCallback(() => {
     runOnUI(() => {
       'worklet';
-      const parameters = getCloseParameters(measure(childrenMeasures));
+      try {
+        const parameters = getCloseParameters(measure(childrenMeasures));
 
-      height.value = withTiming(parameters.height, { duration: 300 * speed });
-      scaleX.value = withTiming(parameters.scaleX, { duration: 300 * speed });
-      opacity.value = withTiming(0, { duration: 400 * speed });
-      translateX.value = withTiming(parameters.translateX, { duration: 300 * speed });
-      translateY.value = withTiming(parameters.translateY, { duration: 300 * speed });
+        height.value = withTiming(parameters.height, { duration: 300 * speed });
+        scaleX.value = withTiming(parameters.scaleX, { duration: 300 * speed });
+        opacity.value = withTiming(0, { duration: 400 * speed });
+        translateX.value = withTiming(parameters.translateX, { duration: 300 * speed });
+        translateY.value = withTiming(parameters.translateY, { duration: 300 * speed });
+      } catch {}
     })();
   }, [childrenMeasures, getCloseParameters, height, opacity, scaleX, translateX, translateY]);
 
@@ -183,7 +187,7 @@ const AnimatedModal = ({
   return (
     <View ref={childrenMeasures}>
       {children}
-      <Portal>
+      <Portal hostName="animated-modal-provider">
         <PanGestureHandler onGestureEvent={panGestureEvent}>
           <Animated.View style={modalAnimatedStyles} pointerEvents={pointerEvents}>
             {!!header && header}
@@ -197,5 +201,18 @@ const AnimatedModal = ({
     </View>
   );
 };
+
+/**
+ * @typedef {{
+ *  children: JSX.Element
+ * }} AnimatedModalProviderProps
+ */
+
+/**
+ * @param {AnimatedModalProviderProps} props
+ */
+export const AnimatedModalProvider = ({ children }) => (
+  <PortalProvider rootHostName="animated-modal-provider">{children}</PortalProvider>
+);
 
 export default observer(AnimatedModal);

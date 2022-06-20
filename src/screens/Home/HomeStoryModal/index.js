@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { View, Text, Image, ScrollView } from 'react-native';
 import useStyles from './useStyles';
 import AnimatedModal from 'components/AnimatedModal';
+import { configStore } from 'stores';
 
 /**
  * @typedef {{
@@ -16,8 +17,9 @@ import AnimatedModal from 'components/AnimatedModal';
 const HomeStoryModal = ({ item }) => {
   const { title, multimedia, abstract, byline, section, subsection } = item;
   const S = useStyles();
+  const T = configStore.localization;
 
-  const images = multimedia.map((item) => ({ uri: item.url }));
+  const image = { uri: multimedia[0].url };
 
   return (
     <ScrollView contentContainerStyle={S.container} showsVerticalScrollIndicator={false}>
@@ -28,8 +30,10 @@ const HomeStoryModal = ({ item }) => {
       <Text style={S.title} children={title} />
       <Text style={S.byline} children={byline} />
       <Text style={S.abstract} children={abstract} />
-      {!!images.length &&
-        images.map((item, index) => <Image style={S.image} source={item} key={`${index}`} />)}
+      <Image style={S.image} source={image} />
+      <Text style={S.abstract} children={T.lorem} />
+      <Text style={S.abstract} children={T.lorem} />
+      <Text style={S.abstract} children={T.lorem} />
     </ScrollView>
   );
 };
