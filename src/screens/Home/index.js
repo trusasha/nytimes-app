@@ -4,8 +4,8 @@ import { View, FlatList } from 'react-native';
 import useStyles from './useStyles';
 import { storiesStore } from 'stores';
 import HomeStoriesItem from './HomeStoriesItem';
-import { PortalProvider } from '@gorhom/portal';
 import HomeHeaderActions from './HomeHeaderActions';
+import { AnimatedModalProvider } from 'components/AnimatedModal';
 
 const Home = () => {
   const S = useStyles();
@@ -18,7 +18,7 @@ const Home = () => {
 
   return (
     <View style={S.container}>
-      <PortalProvider>
+      <AnimatedModalProvider>
         <FlatList
           contentContainerStyle={S.contentContainer}
           scrollEventThrottle={32}
@@ -28,7 +28,7 @@ const Home = () => {
           data={storiesStore.mockData.results}
           ListHeaderComponent={ListHeaderComponent}
         />
-      </PortalProvider>
+      </AnimatedModalProvider>
     </View>
   );
 };

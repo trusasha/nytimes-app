@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { View } from 'react-native';
 import useStyles from './useStyles';
-import { Portal } from '@gorhom/portal';
+import { Portal, PortalProvider } from '@gorhom/portal';
 import { useSpecialStyleProps } from 'hooks/newUseStyles';
 import Animated, {
   measure,
@@ -187,7 +187,7 @@ const AnimatedModal = ({
   return (
     <View ref={childrenMeasures}>
       {children}
-      <Portal>
+      <Portal hostName="animated-modal-provider">
         <PanGestureHandler onGestureEvent={panGestureEvent}>
           <Animated.View style={modalAnimatedStyles} pointerEvents={pointerEvents}>
             {!!header && header}
@@ -201,5 +201,18 @@ const AnimatedModal = ({
     </View>
   );
 };
+
+/**
+ * @typedef {{
+ *  children: JSX.Element
+ * }} AnimatedModalProviderProps
+ */
+
+/**
+ * @param {AnimatedModalProviderProps} props
+ */
+export const AnimatedModalProvider = ({ children }) => (
+  <PortalProvider rootHostName="animated-modal-provider">{children}</PortalProvider>
+);
 
 export default observer(AnimatedModal);

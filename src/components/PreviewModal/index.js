@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { View, TouchableOpacity } from 'react-native';
 import useStyles from './useStyles';
-import { Portal } from '@gorhom/portal';
+import { Portal, PortalProvider } from '@gorhom/portal';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   measure,
@@ -394,7 +394,7 @@ const PreviewModal = ({
   return (
     <View ref={childrenMeasures}>
       {children}
-      <Portal>
+      <Portal hostName="animated-modal-provider">
         <PanGestureHandler onGestureEvent={panGestureEvent}>
           <Animated.View
             style={modalAnimatedStyles}
