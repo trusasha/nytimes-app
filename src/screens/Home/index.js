@@ -9,30 +9,6 @@ import { PortalProvider } from '@gorhom/portal';
 const Home = () => {
   const S = useStyles();
 
-  // const [scrollOffset, setScrollOffset] = useState(0);
-
-  const data = [
-    storiesStore.mockData.results[0],
-    storiesStore.mockData.results[1],
-    storiesStore.mockData.results[2],
-    storiesStore.mockData.results[3],
-    storiesStore.mockData.results[4],
-    storiesStore.mockData.results[5],
-    storiesStore.mockData.results[6],
-    storiesStore.mockData.results[7],
-    storiesStore.mockData.results[8],
-    storiesStore.mockData.results[9],
-    storiesStore.mockData.results[10],
-    storiesStore.mockData.results[11],
-    storiesStore.mockData.results[12],
-    storiesStore.mockData.results[13],
-    storiesStore.mockData.results[14],
-    storiesStore.mockData.results[15],
-    storiesStore.mockData.results[16],
-    storiesStore.mockData.results[17],
-    storiesStore.mockData.results[18],
-  ];
-
   const renderItem = useCallback(({ item }) => <HomeStoriesItem item={item} />, []);
 
   const keyExtractor = useCallback(({ title }) => title, []);
@@ -46,7 +22,7 @@ const Home = () => {
           numColumns={3}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
-          data={data}
+          data={storiesStore.mockData.results}
         />
       </PortalProvider>
     </View>
