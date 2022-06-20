@@ -19,7 +19,7 @@ import PreviewModal from 'components/PreviewModal';
  * @param {HomeStoriesItemProps} props
  */
 const HomeStoriesItem = ({ item }) => {
-  const { title, byline, created_date, multimedia } = item;
+  const { title, multimedia } = item;
   const T = configStore.localization;
   const S = useStyles();
 
@@ -27,12 +27,16 @@ const HomeStoriesItem = ({ item }) => {
   const [previewVisible, setPreviewVisible] = useState(false);
 
   const image = { uri: multimedia?.[0]?.url };
-  const timeFrom = `${T.published}: ${dayjs(created_date).fromNow()}`;
 
   const onModalOpen = useCallback(() => setStoryVisible(true), []);
   const onModalClose = useCallback(() => setStoryVisible(false), []);
 
   const onPreviewOpen = useCallback(() => setPreviewVisible(true), []);
+  const onPreviewClose = useCallback(() => setPreviewVisible(false), []);
+  const onOpenFull = useCallback(() => {
+    setPreviewVisible(false);
+    setStoryVisible(true);
+  }, []);
 
   const modal = useMemo(() => <HomeStoryModal item={item} />, [item]);
   const modalHeader = useMemo(
@@ -56,17 +60,16 @@ const HomeStoriesItem = ({ item }) => {
   );
   const previewActionModal = useMemo(
     () => (
-      <View
-        style={{
-          width: 150,
-          height: 80,
-          backgroundColor: 'white',
-          borderRadius: 12,
-          opacity: 0.9,
-        }}
-      />
+      <View style={S.actionModal}>
+        <TouchableOpacity style={S.actionButton} onPress={onOpenFull}>
+          <Text style={S.actionText} children={T.openFull} />
+        </TouchableOpacity>
+        <TouchableOpacity style={S.actionButton} onPress={onPreviewClose}>
+          <Text style={S.actionText} children={T.close} />
+        </TouchableOpacity>
+      </View>
     ),
-    [],
+    [S.actionButton, S.actionModal, S.actionText, T.close, T.openFull, onOpenFull, onPreviewClose],
   );
 
   return (
@@ -89,11 +92,6 @@ const HomeStoriesItem = ({ item }) => {
             onLongPress={onPreviewOpen}
             delayLongPress={300}>
             <Image style={S.image} source={image} />
-            {/* <View style={S.content}>
-              <Text style={S.title} children={title} numberOfLines={2} />
-              <Text style={S.byline} children={byline} numberOfLines={2} />
-              <Text style={S.published} children={timeFrom} numberOfLines={2} />
-            </View> */}
           </TouchableOpacity>
         </AnimatedModal>
       </PreviewModal>

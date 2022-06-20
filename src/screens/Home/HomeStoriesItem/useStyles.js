@@ -4,18 +4,15 @@ import newUseStyles from 'hooks/newUseStyles';
 const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
   const container = n({
     flex: 1,
-    marginBottom: 16,
-    margin: 6,
+    margin: 0.5,
   });
 
   return {
     container,
     itemContainer: {
       height: 124,
-      // padding: 12,
       flexDirection: 'row',
       backgroundColor: p.background,
-      borderRadius: 8,
       shadowRadius: 4,
       shadowColor: 'black',
       shadowOpacity: 0.2,
@@ -24,11 +21,7 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
     },
     image: {
       flex: 1,
-      // width: 100,
-      // maxWidth: 100,
       backgroundColor: 'grey',
-      borderRadius: 4,
-      // marginRight: 12,
       flexGrow: 1,
     },
     content: {
@@ -74,6 +67,22 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
     previewTitle: {
       paddingHorizontal: 12,
       ...getTextStyles(14, '700', 22, p.stroke),
+    },
+    actionModal: {
+      backgroundColor: 'white',
+      borderRadius: 12,
+      opacity: 0.9,
+      overflow: 'hidden',
+    },
+    actionButton: {
+      marginTop: -1,
+      paddingHorizontal: 20,
+      paddingVertical: 4,
+      borderTopColor: p.border,
+      borderTopWidth: 1,
+    },
+    actionText: {
+      ...getTextStyles(16, '400', 22, p.stroke),
     },
   };
 });
