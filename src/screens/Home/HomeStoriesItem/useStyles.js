@@ -10,7 +10,7 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
   return {
     container,
     itemContainer: {
-      height: 124,
+      height: w / 3,
       flexDirection: 'row',
       backgroundColor: p.background,
       shadowRadius: 4,
