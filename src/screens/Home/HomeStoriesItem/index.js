@@ -1,13 +1,13 @@
-import React, { useRef, useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import useStyles from './useStyles';
 import { configStore } from 'stores';
-import dayjs from 'dayjs';
 import AnimatedModal from 'components/AnimatedModal';
 import HomeStoryModal from '../HomeStoryModal';
 import HomeStoryPreviewModal from '../HomeStoryPreviewModal';
 import PreviewModal from 'components/PreviewModal';
+import { ArrowBackIcon } from 'assets/svg';
 
 /**
  * @typedef {{
@@ -42,11 +42,13 @@ const HomeStoriesItem = ({ item }) => {
   const modalHeader = useMemo(
     () => (
       <View style={S.header}>
-        <TouchableOpacity style={S.backButton} onPress={onModalClose} />
+        <TouchableOpacity style={S.backButton} onPress={onModalClose}>
+          <ArrowBackIcon {...S.backIconProps} />
+        </TouchableOpacity>
         <Text style={S.headerTitle} children={title} numberOfLines={1} />
       </View>
     ),
-    [S.backButton, S.header, S.headerTitle, onModalClose, title],
+    [S.backButton, S.backIconProps, S.header, S.headerTitle, onModalClose, title],
   );
 
   const preview = useMemo(() => <HomeStoryPreviewModal item={item} />, [item]);
