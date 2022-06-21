@@ -55,10 +55,16 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
     backButton: {
       width: 40,
       height: 40,
-      backgroundColor: p.border,
       position: 'absolute',
       left: 12,
       zIndex: 10,
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+    },
+    backIconProps: {
+      width: 20,
+      height: 20,
+      fill: p.stroke,
     },
     headerTitle: {
       paddingHorizontal: 48,

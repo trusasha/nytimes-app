@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { View, Text, Image, ScrollView } from 'react-native';
 import useStyles from './useStyles';
-import AnimatedModal from 'components/AnimatedModal';
 import { configStore } from 'stores';
 
 /**
