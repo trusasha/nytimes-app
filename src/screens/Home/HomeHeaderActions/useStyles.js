@@ -16,18 +16,33 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => ({
   button: {
     width: 30,
     height: 30,
-    backgroundColor: p.strokeSecondary,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  menuIconProps: {
+    height: 70,
+  },
   modal: {
-    height: 100,
     width: 100,
     backgroundColor: p.border,
-    alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
+    overflow: 'hidden',
+    opacity: 0.9,
+  },
+  actionButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+  },
+  actionText: {
+    ...getTextStyles(16, '400', 22, p.stroke),
+  },
+  separator: {
+    flex: 1,
+    height: 1,
+    backgroundColor: p.strokeSecondary,
   },
 }));
 
