@@ -87,6 +87,7 @@ const AnimatedModal = ({
   const translateY = useSharedValue(0);
   const height = useSharedValue(0);
   const scaleX = useSharedValue(1);
+  const borderRadius = useSharedValue(0);
 
   const gestureTranslateX = useSharedValue(0);
   const gestureTranslateY = useSharedValue(0);
@@ -97,6 +98,7 @@ const AnimatedModal = ({
       gestureTranslateX.value = event.translationX;
       gestureTranslateY.value = event.translationY;
       gestureScale.value = withTiming(0.9, { duration: 200 * speed });
+      borderRadius.value = withTiming(24, { duration: 200 * speed });
     },
     onEnd: (event) => {
       if (event.translationX > 100 || event.translationY > 100) {
@@ -104,10 +106,12 @@ const AnimatedModal = ({
         gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
         gestureTranslateY.value = withTiming(0, { duration: 200 * speed });
         gestureScale.value = withTiming(1, { duration: 200 * speed });
+        borderRadius.value = withTiming(0, { duration: 200 * speed });
       } else {
         gestureTranslateX.value = withTiming(0, { duration: 200 * speed });
         gestureTranslateY.value = withTiming(0, { duration: 200 * speed });
         gestureScale.value = withTiming(1, { duration: 200 * speed });
+        borderRadius.value = withTiming(0, { duration: 200 * speed });
       }
     },
   });
@@ -116,6 +120,7 @@ const AnimatedModal = ({
     return {
       height: height.value,
       opacity: opacity.value,
+      borderRadius: borderRadius.value,
       transform: [
         { translateY: translateY.value + gestureTranslateY.value },
         { translateX: translateX.value + gestureTranslateX.value },
@@ -157,15 +162,27 @@ const AnimatedModal = ({
         translateY.value = parameters.translateY;
         height.value = parameters.height;
         scaleX.value = parameters.scaleX;
+        borderRadius.value = 24;
 
         height.value = withTiming(h, { duration: 300 * speed });
         scaleX.value = withTiming(1, { duration: 300 * speed });
         opacity.value = withTiming(1, { duration: 400 * speed });
         translateX.value = withTiming(0, { duration: 300 * speed });
         translateY.value = withTiming(0, { duration: 300 * speed });
+        borderRadius.value = withTiming(0, { duration: 300 * speed });
       } catch {}
     })();
-  }, [childrenMeasures, getCloseParameters, h, height, opacity, scaleX, translateX, translateY]);
+  }, [
+    borderRadius,
+    childrenMeasures,
+    getCloseParameters,
+    h,
+    height,
+    opacity,
+    scaleX,
+    translateX,
+    translateY,
+  ]);
 
   const hideModal = useCallback(() => {
     runOnUI(() => {
@@ -178,9 +195,19 @@ const AnimatedModal = ({
         opacity.value = withTiming(0, { duration: 400 * speed });
         translateX.value = withTiming(parameters.translateX, { duration: 300 * speed });
         translateY.value = withTiming(parameters.translateY, { duration: 300 * speed });
+        borderRadius.value = withTiming(24, { duration: 300 * speed });
       } catch {}
     })();
-  }, [childrenMeasures, getCloseParameters, height, opacity, scaleX, translateX, translateY]);
+  }, [
+    borderRadius,
+    childrenMeasures,
+    getCloseParameters,
+    height,
+    opacity,
+    scaleX,
+    translateX,
+    translateY,
+  ]);
 
   useEffect(() => (visible ? showModal() : hideModal()), [hideModal, showModal, visible]);
 

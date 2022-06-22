@@ -11,7 +11,6 @@ const useStyles = newUseStyles(
       zIndex: 10,
       position: 'absolute',
       width: w,
-      borderRadius: 24,
       overflow: 'hidden',
       ...modalContainerStyle,
     },
