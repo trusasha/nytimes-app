@@ -21,6 +21,7 @@ const Home = () => {
       <AnimatedModalProvider>
         <FlatList
           contentContainerStyle={S.contentContainer}
+          showsVerticalScrollIndicator={false}
           scrollEventThrottle={32}
           numColumns={3}
           renderItem={renderItem}
