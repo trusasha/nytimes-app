@@ -10,8 +10,6 @@ const indexPath = path.join(svgPath, 'index.js');
 let filenames = [];
 try {
   filenames = fs.readdirSync(svgPath).filter((filename) => filename !== 'index.js');
-
-  console.log('FILENAMES: ', filenames);
 } catch {}
 
 const toIconName = (filename = '') =>
