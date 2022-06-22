@@ -5,16 +5,15 @@ const useStyles = newUseStyles(({ p, w, h, l, n, i }) => {
     container: {
       position: 'absolute',
       top: 0,
-      alignSelf: 'center',
-      zIndex: 1,
+      left: 0,
+      zIndex: 100,
       shadowRadius: 8,
       shadowOpacity: 0.2,
       shadowColor: 'black',
     },
     backdrop: {
       position: 'absolute',
-      left: -w,
-      width: w * 2,
+      width: w,
       height: h,
     },
   };
